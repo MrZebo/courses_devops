@@ -1,0 +1,5 @@
+centos ansible_ssh_host=54.237.90.183 ansible_ssh_port=22 ansible_ssh_user=centos
+ubuntu ansible_ssh_host=52.86.83.216 ansible_ssh_port=22 ansible_ssh_user=ubuntu
+
+
+

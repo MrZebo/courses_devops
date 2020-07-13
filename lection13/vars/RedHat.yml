@@ -1,0 +1,10 @@
+---
+
+- name: installing httpd
+  yum: pkg=httpd state=present
+
+- name: installing vim
+  yum: pkg=vim state=present
+
+- name: installing nano
+  yum: pkg=nano state=present
