@@ -1,0 +1,42 @@
+---
+# tasks for Debian family
+- name: Add an apt key by id from a keyserver
+  apt_key:
+    url: https://nginx.org/keys/nginx_signing.key
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: apt update
+  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+  when: ansible_os_family == "Debian"
+
+- name: add repo
+  apt_repository:
+    repo: ppa:nginx/stable
+  when: ansible_os_family == "Debian"
+
+- name: Install nginx
+  apt: pkg=nginx state=present
+  when: ansible_os_family == "Debian"
+# tasks for Redhat family
+- name: Install yum-utils
+  yum: pkg=yum-utils state=present
+  when: ansible_os_family == "RedHat"
+
+- name: Add repository
+  yum_repository:
+    name: nginx stable repo
+    description: Nginx stable repo
+    baseurl: http://nginx.org/packages/centos/$releasever/$basearch/
+    gpgcheck: 1
+    enabled: 1
+    gpgkey: https://nginx.org/keys/nginx_signing.key
+  when: ansible_os_family == "RedHat"
+
+- name: Install epel-release
+  yum: pkg=epel-release state=present
+  when: ansible_os_family == "RedHat"
+
+- name: Install  nginx
+  yum: pkg=nginx state=present
+  when: ansible_os_family == "RedHat"
