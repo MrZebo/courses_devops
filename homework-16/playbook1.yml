@@ -1,0 +1,16 @@
+---
+- hosts: all
+  name: Include OS
+  gather_facts: true
+  become: true
+  roles:
+    - nginx
+  vars:
+    nginx_domains_config:
+      - { port: '8088', name: 'Server1', directory: '/var/www/html/first', ssl: true }
+      - { port: '8082', name: 'Server2', directory: '/var/www/html/second',  ssl: false }
+      - { port: '8091', name: 'Server3', directory: '/var/www/html/third', ssl: false }
+
+
+
+

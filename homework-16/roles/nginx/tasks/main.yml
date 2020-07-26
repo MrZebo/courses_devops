@@ -1,0 +1,71 @@
+---
+# tasks for Debian family
+- name: Add an apt key by id from a keyserver
+  apt_key:
+    url: https://nginx.org/keys/nginx_signing.key
+    state: present
+
+
+- name: apt update
+  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+
+- name: add repo
+  apt_repository:
+    repo: ppa:nginx/stable
+
+
+- name: Install nginx
+  apt: pkg=nginx state=present
+
+
+
+
+
+- name: Create ssl directory
+  file: path=/etc/ssl/hillel state=directory mode=0775
+
+
+- name: Generate Private key
+  openssl_privatekey: path=/etc/ssl/hillel/hillel.key
+
+
+- name: Generate CSR
+  openssl_csr: 
+    path: /etc/ssl/hillel/hillel.csr
+    privatekey_path: /etc/ssl/hillel/hillel.key 
+    common_name: eample.com
+    country_name: US
+    email_address: test@example.com
+    organization_name: devopscourses
+
+
+- name: Generate a self signed certificate
+  openssl_certificate:
+    csr_path: /etc/ssl/hillel/hillel.csr
+    path: /etc/ssl/hillel/hillel.crt
+    privatekey_path: /etc/ssl/hillel/hillel.key
+    provider: selfsigned
+
+- name: create nginx domain configs
+  template:
+     src: "nginx_conf.j2"
+     dest: "/etc/nginx/conf.d/{{ domain.name }}.conf"
+  loop: "{{ nginx_domains_config }}"
+  loop_control:
+    loop_var: domain
+  notify: nginx reload
+
+- name: Create directories
+  file: path={{ domain.directory }} state=directory mode=0755
+  loop: "{{ nginx_domains_config }}"
+  loop_control:
+    loop_var: domain
+
+- name: copy html files on server
+  template:
+     src: "index_html.j2"
+     dest: "{{ domain.directory }}/index.html"
+  loop: "{{ nginx_domains_config }}"
+  loop_control:
+    loop_var: domain

@@ -1,0 +1,10 @@
+{% if domain.ssl %}
+
+<h1> I'm using Ssl and http2 on 443 !!! </h1>
+
+
+{% else %}
+
+<h1>I'm working on {{ domain.port }} </h1>
+
+{% endif %}
