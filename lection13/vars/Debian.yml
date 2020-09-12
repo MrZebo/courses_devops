@@ -1,0 +1,9 @@
+---
+- name: installing apache2
+  apt: pkg=apache2 state=latest
+
+- name: installing vim
+  apt: pkg=vim state=latest
+
+- name: installing nano
+  apt: pkg=nano state=latest
