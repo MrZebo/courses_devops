@@ -1,0 +1,35 @@
+    server {
+        
+        listen {% if domain.ssl %}{{ domain.port }} ssl http2{% else %} {{ domain.port }} {% endif %};
+
+        server_name  localhost;
+
+        root {{ domain.directory }};
+         
+        {% if domain.ssl %}
+
+        ssl_certificate /etc/ssl/hillel/hillel.crt;
+        ssl_certificate_key /etc/ssl/hillel/hillel.key;
+        {% endif %}
+
+        location /  {
+            root   {{ domain.directory }};
+            index index.php  index.html index.htm;
+        }
+
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+
+        location ~ \.php$ {
+            root           {{ domain.directory }};
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+            include        fastcgi_params;
+        }
+
+    }
